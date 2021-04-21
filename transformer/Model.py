@@ -237,10 +237,10 @@ class Stacked_Decoder(torch.nn.Module):
             [Decoder(ff_dim, n_heads, emb_dim, qk_dim, v_dim, dropout) for _ in range(n_layers)])
         self.norm = torch.nn.LayerNorm(emb_dim, eps=1e-6)
 
-    def forward(self, tgt, msk_tgt, z_src, msk_src, z_sim, msk_sim, z_pre, msk_pre):
+    def forward(self, tgt, msk_tgt, z_src, msk_src):
         for i, decoderlayer in enumerate(self.decoderlayers):
             #tgt = decoderlayer(tgt, msk_tgt, z_src, msk_src, z_sim, msk_sim, z_pre, msk_pre)
-            tgt = decoderlayer(z_src, z_sim, z_pre, tgt, msk_src, msk_sim, msk_pre, msk_tgt)
+            tgt = decoderlayer(z_src, tgt, msk_src, msk_tgt)
         return self.norm(tgt)
 
 
