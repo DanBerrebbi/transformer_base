@@ -11,7 +11,7 @@ from transformer.Optimizer import OptScheduler, LabelSmoothing_NLL, LabelSmoothi
 from transformer.Learning import Learning
 from tools.Tools import create_logger, read_dnet
 
-sys.stderr = open('error_serie_true.log', 'w')
+sys.stderr = open('error_base.log', 'w')
 
 ######################################################################
 ### Options ##########################################################
