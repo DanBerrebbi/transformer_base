@@ -47,15 +47,13 @@ class Inference():
 
     with torch.no_grad():
       self.model.eval()
-      for pos, [batch_src, batch_sim, batch_pre] in testset:
+      for pos, [batch_src] in testset:
 
         src, self.msk_src = prepare_source(batch_src, self.src_voc.idx_pad, self.device) #src is [bs, ls] msk_src is [bs,1,ls]
-        sim, self.msk_sim = prepare_source(batch_sim, self.src_voc.idx_pad, self.device)
-        pre, self.msk_pre = prepare_source(batch_pre, self.tgt_voc.idx_pad, self.device)
+
         ### encode
         self.z_src = self.model.encode_src(src, self.msk_src) #[bs,ls,ed]
-        self.z_sim = self.model.encode_sim(sim, self.msk_sim, self.z_src, self.msk_src)
-        self.z_pre = self.model.encode_pre(pre, self.msk_pre, self.z_sim, self.msk_sim, self.z_src, self.msk_src)
+
 
         ### decode step-by-step
         finals = self.traverse_beam()
@@ -90,7 +88,7 @@ class Inference():
       ### DECODE ###
       ##############
       msk_tgt = (1 - torch.triu(torch.ones((1, lt, lt), device=self.device), diagonal=1)).bool()
-      y_next = self.model.decode(hyps, msk_tgt, self.z_src, self.msk_src, self.z_sim, self.msk_sim, self.z_pre, self.msk_pre)[:,-1,:] #[I,lt,Vt] => [I,Vt]
+      y_next = self.model.decode(hyps, msk_tgt, self.z_src, self.msk_src)[:,-1,:] #[I,lt,Vt] => [I,Vt]
 
       hyps, logP = self.expand(y_next, hyps, logP, bs) #both are [bs,1*Vt,lt] OR [bs,K*Vt,lt]
       
