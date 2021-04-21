@@ -72,7 +72,8 @@ class Score():
     if n_msk > 0:
       _, inds_pred = torch.topk(pred, k=1, dim=1)
       inds_pred_msk = inds_pred[inds_gold_msk].squeeze()
-      n_ok_msk = torch.sum(inds_pred_msk==idx_msk) #.nonzero(as_tuple=False)
+      n_ok_msk = torch.sum(inds_pred_msk==idx_msk) #.nonzero
+      # (as_tuple=False)
     return n_msk, n_ok_msk
 
 ##############################################################################################################
@@ -110,19 +111,17 @@ class Learning():
       n_batch = 0
       score = Score()
       #for batch_pos, [batch_src, batch_tgt] in trainset:
-      for batch_pos, [batch_src, batch_tgt, batch_sim, batch_pre] in trainset:
+      for batch_pos, [batch_src, batch_tgt] in trainset:
         n_batch += 1
         self.model.train()
         ###
         ### forward
         ###
         src, msk_src = prepare_source(batch_src, self.idx_pad, device)
-        sim, msk_sim = prepare_source(batch_sim, self.idx_pad, device)
-        pre, msk_pre = prepare_source(batch_pre, self.idx_pad, device)
 
         tgt, ref, msk_tgt = prepare_target(batch_tgt, self.idx_pad, self.idx_sep, self.idx_msk, self.mask_prefix, device)
 
-        pred = self.model.forward(src, sim, pre, tgt, msk_src,msk_sim, msk_pre, msk_tgt) #no log_softmax is applied
+        pred = self.model.forward(src, tgt, msk_src, msk_tgt) #no log_softmax is applied
         ###
         ### compute loss
         ###
@@ -185,13 +184,11 @@ class Learning():
     n_batch = 0
     with torch.no_grad():
       self.model.eval()
-      for batch_pos, [batch_src, batch_tgt, batch_sim, batch_pre] in validset:
+      for batch_pos, [batch_src, batch_tgt] in validset:
         n_batch += 1
         src, msk_src = prepare_source(batch_src, self.idx_pad, device)
-        sim, msk_sim = prepare_source(batch_sim, self.idx_pad, device)
-        pre, msk_pre = prepare_source(batch_pre, self.idx_pad, device)
         tgt, ref, msk_tgt = prepare_target(batch_tgt, self.idx_pad, self.idx_sep, self.idx_msk, self.mask_prefix, device)
-        pred = self.model.forward(src, sim, pre, tgt, msk_src,msk_sim, msk_pre, msk_tgt) #no log_softmax is applied
+        pred = self.model.forward(src,tgt, msk_src, msk_tgt) #no log_softmax is applied
         loss = self.criter(pred, ref) ### batch loss
         valid_loss += loss.item() / torch.sum(ref != self.idx_pad)
         if n_batch == 1:
