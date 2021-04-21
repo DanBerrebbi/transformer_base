@@ -183,13 +183,6 @@ if __name__ == '__main__':
     src_voc = Vocab(src_voc)
     tgt_voc = Vocab(tgt_voc)
 
-    #####################################################
-    ####     a verif
-    #####################################################
-
-    sim_voc = src_voc
-    pre_voc = tgt_voc
-
 
     ########################
     ### load model/optim ###
@@ -222,11 +215,11 @@ if __name__ == '__main__':
     valid = None
     if o.src_valid is not None and o.tgt_valid is not None:
         # valid = Dataset([src_voc, tgt_voc], [o.src_valid, o.tgt_valid], o.shard_size, o.batch_size, o.batch_type, o.max_length)
-        valid = Dataset([src_voc, tgt_voc, sim_voc, pre_voc], [o.src_valid, o.tgt_valid, o.sim_valid, o.pre_valid], o.shard_size, o.batch_size, o.batch_type,
+        valid = Dataset([src_voc, tgt_voc], [o.src_valid, o.tgt_valid], o.shard_size, o.batch_size, o.batch_type,
                         o.max_length)
     #train = Dataset([src_voc, tgt_voc], [o.src_train, o.tgt_train], o.shard_size, o.batch_size, o.batch_type, o.max_length)
 
-    train = Dataset([src_voc, tgt_voc, sim_voc, pre_voc], [o.src_train, o.tgt_train, o.sim_train, o.pre_train],
+    train = Dataset([src_voc, tgt_voc], [o.src_train, o.tgt_train],
                     o.shard_size, o.batch_size, o.batch_type, o.max_length)
 
     #############
