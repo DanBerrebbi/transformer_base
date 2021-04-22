@@ -17,7 +17,7 @@ dir=$josep/minmt_base
 dnet=$PWD/model_base_dan
 
 
-fmod=$dnet/network.checkpoint_00015000.pt ####### A MODIF
+fmod=$dnet/network.checkpoint_00145000.pt ####### A MODIF
 
 	for corpus in Europarl; do
 	    echo $corpus
