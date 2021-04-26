@@ -17,9 +17,9 @@ dir=$josep/minmt_base
 dnet=$PWD/model_serie_double_batch
 
 
-fmod=$dnet/network.checkpoint_00170000.pt ####### A MODIF
+fmod=$dnet/network.checkpoint_00450000.pt ####### A MODIF
 
-	for corpus in Europarl; do
+	for corpus in ECB; do
 	    echo $corpus
 	    echo test ...
 	    fsrc=$stovec/clean.$corpus.en-fr.en.tst.bpe.vec.sim0.5_k5_n0_t0.8.src
