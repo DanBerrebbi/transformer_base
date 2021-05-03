@@ -301,7 +301,7 @@ class Decoder(torch.nn.Module):
         # ATTN over src words : q are words from the previous layer, k, v are src words
         tmp3 = self.multihead_attn_enc_src(q=tmp1, k=z_src, v=z_src, msk=msk_src)  # la query reste tmp1 car tmp1 est la variable en sortie du précédent layer
         # ADD
-        tmp = tmp3 + tmp
+        tmp = tmp3
 
 
         # NORM
